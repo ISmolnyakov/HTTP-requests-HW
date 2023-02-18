@@ -49,4 +49,3 @@ if __name__ == '__main__':
     client = YaUploader(get_token(token))
     client.get_upload_link(path_to_file)
     client.upload(path_to_file)
-    
