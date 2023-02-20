@@ -1,26 +1,21 @@
 import requests
-from pprint import pprint
 
-def get_data(link):
-    link = requests.get('https://akabab.github.io/superhero-api/api/all.json')
-    result_js = link.json()
-    return result_js
 
-def find_name(link, names_list):
-    info = get_data(link)
-    h_names = []
-    h_stat = []
-    for i in info:
-        for name in names_list:
-            if i['name'] == name:
-                h_names.append(i['name'])
-                h_stat.append(i['powerstats']['intelligence'])
-    hero_intel = zip(h_names, h_stat)
-    compare_dict = dict(hero_intel)
-    result = max(compare_dict.items())
-    pprint(f'Highest intelligence belongs to {result}')
+def best_hero(heroes: list):
+    heroes_dict = {}
+    url = 'https://akabab.github.io/superhero-api/api/all.json'
+    hero_info = requests.get(
+        url)
+    if hero_info.status_code != 200:
+        return "Error"
+    hero_js = hero_info.json()
+    for hero_name in hero_js:
+        h_name = hero_name['name']
+        if h_name in heroes:
+            heroes_dict[h_name] = int(hero_name['powerstats']['intelligence'])
+    top_hero = max(heroes_dict, key=lambda x: heroes_dict[x])
+    result = f"\nСамый умный супергерой: {top_hero} - его интелект: {heroes_dict[top_hero]}"
+    return result
 
-data = 'https://akabab.github.io/superhero-api/api/all.json'
-get_data(data)
-names = ['Thanos', 'Hulk', 'Captain America']
-find_name(data, names)
+
+print(best_hero(['Thanos', 'Hulk', 'Captain America']))
